@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Application</title>
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #1a5f7a 0%, #086288 100%);
+            --secondary-gradient: linear-gradient(135deg, #2C5364 0%, #203A43 100%);
+            --accent-color: #00a8ff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --card-hover: #f8f9fa;
+            --card-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+            --error-color: #e53e3e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: #f5f6fa;
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        h1 {
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+            padding: 15px 20px;
+            font-size: 32px;
+            text-align: center;
+            font-weight: 600;
+            background: linear-gradient(to right, rgba(44, 62, 80, 0.9), rgba(44, 62, 80, 0.7));
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--text-primary);
+            margin-bottom: 30px;
+            position: relative;
+            padding-bottom: 10px;
+            font-size: 32px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 2px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .cards-container {
+            display: flex;
+            flex-direction: row;
+            gap: 30px;
+            margin: 40px auto;
+            max-width: 1000px;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: all var(--transition-speed);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            min-height: 240px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-gradient);
+            transform: scaleX(0);
+            transition: transform var(--transition-speed);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card h3 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 650px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .form-group label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="tel"],
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: var(--text-primary);
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(0, 168, 255, 0.1);
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232c3e50' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1em;
+            padding-right: 2.5rem;
+        }
+
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px dashed #e2e8f0;
+            border-radius: 6px;
+            background-color: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .form-group input[type="file"]:hover {
+            border-color: var(--accent-color);
+            background-color: rgba(0, 168, 255, 0.05);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            color: white;
+            font-size: 24px;
+        }
+
+        .card:nth-child(2n) .card-icon {
+            background: var(--secondary-gradient);
+        }
+
+        .experience-badge {
+            background: rgba(0, 168, 255, 0.1);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            margin-top: 15px;
+            font-weight: 500;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            max-width: 650px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .buttons button {
+            padding: 0.8rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 100px;
+        }
+
+        .buttons button:not(.prev) {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .buttons .prev {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: var(--text-primary);
+        }
+
+        .buttons button:hover:not(.prev) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .buttons .prev:hover {
+            background: #f8fafc;
+        }
+
+        .page {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--card-shadow);
+            opacity: 0;
+            transform: translateY(20px);
+            min-height: 450px;
+        }
+
+        .page.active {
+            display: block;
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+
+        .error {
+            color: var(--error-color);
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideIn {
+            from { width: 0; }
+            to { width: 80px; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .file-requirements {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        .employment-history-fields {
+            display: none;
+        }
+
+        .employment-history-fields.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Success Popup Styles */
+        .success-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .success-popup.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .success-popup-content {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            transform: scale(0.8);
+            transition: transform 0.3s ease;
+        }
+
+        .success-popup.show .success-popup-content {
+            transform: scale(1);
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #00b894, #00a085);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 40px;
+        }
+
+        .success-popup h3 {
+            color: var(--text-primary);
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .success-popup p {
+            color: var(--text-secondary);
+            font-size: 16px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+
+        .popup-button {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .popup-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Reset Button Styles */
+        .reset-button {
+            background: #6c757d;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .reset-button:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Document Modal Styles */
+        .document-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-body {
+            max-height: 80vh;
+            overflow: auto;
+        }
+
+        .document-preview {
+            width: 100%;
+            height: 500px;
+            border: none;
+        }
+
+        .document-image {
+            width: 100%;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .cards-container {
+                flex-direction: column;
+                padding: 0 10px;
+            }
+
+            .card {
+                padding: 20px;
+                min-height: 200px;
+                max-width: 100%;
+            }
+
+            .buttons {
+                padding: 0 1rem;
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .buttons button {
+                width: 100%;
+            }
+
+            .form-group {
+                padding: 1rem;
+            }
+
+            .page {
+                padding: 20px;
+                min-height: 350px;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+
+            .success-popup-content {
+                padding: 30px 20px;
+            }
+
+            .document-preview, .document-image {
+                height: 50vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page active" id="page1">
+            <h1>Employee Job Application</h1>
+            <h2>Select Your Career Path</h2>
+            <div class="cards-container">
+                <div class="card" data-role="intern">
+                    <div class="card-icon">🎓</div>
+                    <h3>Intern</h3>
+                    <p>Start your journey with us</p>
+                    <div class="experience-badge">0-1 years experience</div>
+                </div>
+                <div class="card" data-role="junior">
+                    <div class="card-icon">💼</div>
+                    <h3>Junior</h3>
+                    <p>Take the next step</p>
+                    <div class="experience-badge">1-3 years experience</div>
+                </div>
+                <div class="card" data-role="senior">
+                    <div class="card-icon">⭐</div>
+                    <h3>Senior</h3>
+                    <p>Lead and innovate</p>
+                    <div class="experience-badge">3-5 years experience</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page" id="page2">
+            <h2>Location Preference</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="location">Preferred Location:</label>
+                    <select id="location" required>
+                        <option value="">Select Location</option>
+                        <option value="Hyderabad">Hyderabad</option>
+                        <option value="Bangalore">Bangalore</option>
+                        <option value="Pune">Pune</option>
+                    </select>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="prev" onclick="prevPage()">Previous</button>
+                <button onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <div class="page" id="page3">
+            <h2>Personal Information</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="fullname">Full Name:</label>
+                    <input type="text" id="fullname" required>
+                </div>
+                <div class="input-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="input-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <div class="input-group">
+                    <label for="gender">Gender:</label>
+                    <select id="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="transgender">Transgender</option>
+                        <option value="non-binary">Non-Binary</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="fathername">Father's Name:</label>
+                    <input type="text" id="fathername" required>
+                </div>
+                <div class="input-group">
+                    <label for="fatherphone">Father's Mobile Number:</label>
+                    <input type="tel" id="fatherphone" required>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="prev" onclick="prevPage()">Previous</button>
+                <button onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <div class="page" id="page4">
+            <h2>Document Upload</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="ssc">SSC Certificate:</label>
+                    <input type="file" id="ssc" required accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="file-requirements">Accepts PDF, JPG, or PNG files (Max 5MB)</div>
+                </div>
+                <div class="input-group">
+                    <label for="inter">Intermediate Certificate:</label>
+                    <input type="file" id="inter" required accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="file-requirements">Accepts PDF, JPG, or PNG files (Max 5MB)</div>
+                </div>
+                <div class="input-group">
+                    <label for="graduation">Graduation Certificate:</label>
+                    <input type="file" id="graduation" required accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="file-requirements">Accepts PDF, JPG, or PNG files (Max 5MB)</div>
+                </div>
+                <div class="input-group">
+                    <label for="postgrad">Post Graduation Certificate (Optional):</label>
+                    <input type="file" id="postgrad" accept=".pdf,.jpg,.jpeg,.png">
+                    <div class="file-requirements">Accepts PDF, JPG, or PNG files (Max 5MB)</div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="prev" onclick="prevPage()">Previous</button>
+                <button onclick="nextPage()">Next</button>
+            </div>
+        </div>
+
+        <div class="page" id="page5">
+            <h2>Employment History</h2>
+            <div class="form-group">
+                <div class="input-group">
+                    <label for="employment-status">Employment Status:</label>
+                    <select id="employment-status" required>
+                        <option value="">Select Status</option>
+                        <option value="fresher">Fresher</option>
+                        <option value="experienced">Experienced</option>
+                    </select>
+                </div>
+                <div id="employment-history-fields" class="employment-history-fields">
+                    <div class="input-group">
+                        <label for="company">Company Name:</label>
+                        <input type="text" id="company" class="name-field employment-field">
+                    </div>
+                    <div class="input-group">
+                        <label for="companylocation">Company Location:</label>
+                        <input type="text" id="companylocation" class="name-field employment-field">
+                    </div>
+                    <div class="input-group">
+                        <label for="experience">Years of Experience:</label>
+                        <input type="number" id="experience" min="0" max="50" step="0.5" class="employment-field">
+                    </div>
+                    <div class="input-group">
+                        <label for="relieving">Relieving Letter:</label>
+                        <input type="file" id="relieving" accept=".pdf,.jpg,.jpeg,.png" class="employment-field">
+                        <div class="file-requirements">Accepts PDF, JPG, or PNG files (Max 5MB)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons">
+                <button class="prev" onclick="prevPage()">Previous</button>
+                <button onclick="submitForm()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Popup -->
+    <div class="success-popup" id="successPopup">
+        <div class="success-popup-content">
+            <div class="success-icon">✓</div>
+            <h3>Application Submitted Successfully!</h3>
+            <p>Thank you for your application. We have received your details and will review them shortly. You will be contacted soon regarding the next steps.</p>
+            <button class="popup-button" onclick="closeSuccessPopup()">Continue</button>
+        </div>
+    </div>
+
+    <!-- Document Modal -->
+    <div id="document-modal" class="document-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDocumentModal()">×</span>
+            <div class="modal-header">
+                <h3 id="modal-title">Document Preview</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <!-- Content will be dynamically set -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentPage = 1;
+        let selectedRole = '';
+        let isExperienced = false;
+        const BASE_URL = 'http://localhost:3000';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.card').forEach(c => {
+                        c.style.border = '1px solid rgba(0, 0, 0, 0.05)';
+                    });
+                    card.style.border = '2px solid var(--accent-color)';
+                    selectedRole = card.getAttribute('data-role');
+                    nextPage();
+                });
+            });
+
+            setupValidation();
+            
+            const employmentStatusSelect = document.getElementById('employment-status');
+            if (employmentStatusSelect) {
+                employmentStatusSelect.addEventListener('change', function() {
+                    const employmentHistoryFields = document.getElementById('employment-history-fields');
+                    isExperienced = this.value === 'experienced';
+                    
+                    if (isExperienced) {
+                        employmentHistoryFields.classList.add('show');
+                        document.querySelectorAll('.employment-field').forEach(field => {
+                            field.setAttribute('required', '');
+                        });
+                    } else {
+                        employmentHistoryFields.classList.remove('show');
+                        document.querySelectorAll('.employment-field').forEach(field => {
+                            field.removeAttribute('required');
+                            field.value = '';
+                            removeError(field);
+                        });
+                    }
+                });
+            }
+        });
+
+        function nextPage() {
+            if (!validateCurrentPage()) return;
+            if (currentPage < 5) {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                currentPage++;
+                document.getElementById(`page${currentPage}`).classList.add('active');
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                currentPage--;
+                document.getElementById(`page${currentPage}`).classList.add('active');
+            }
+        }
+
+        function validateCurrentPage() {
+            let isValid = true;
+            const currentPageElement = document.getElementById(`page${currentPage}`);
+            
+            currentPageElement.querySelectorAll('.error').forEach(error => error.remove());
+
+            if (currentPage === 1) {
+                if (!selectedRole) {
+                    alert('Please select a role to continue');
+                    return false;
+                }
+                return true;
+            }
+
+            currentPageElement.querySelectorAll('[required]').forEach(field => {
+                if (field.classList.contains('employment-field') && !isExperienced) return;
+                
+                if (!field.value || (field.type === 'file' && field.files && field.files.length === 0)) {
+                    isValid = false;
+                    showError(field, 'This field is required');
+                } else if (field.type === 'file' && field.files && field.files.length > 0) {
+                    const file = field.files[0];
+                    if (!validateFileType(file)) {
+                        isValid = false;
+                        showError(field, 'Please upload a PDF, JPG, or PNG file only');
+                    }
+                    if (!validateFileSize(file)) {
+                        isValid = false;
+                        showError(field, `File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds 5MB limit`);
+                    }
+                }
+            });
+
+            const nameFields = currentPageElement.querySelectorAll('#fullname, #fathername, #company, #companylocation');
+            nameFields.forEach(field => {
+                if (field && field.value) {
+                    if (!validateName(field.value)) {
+                        isValid = false;
+                        showError(field, 'Name should contain only alphabets and spaces');
+                    } else if (!validateNameLength(field.value)) {
+                        isValid = false;
+                        showError(field, 'Name should be at least 5 characters long (excluding spaces)');
+                    } else if (!validateNameMaxLength(field.value)) {
+                        isValid = false;
+                        showError(field, 'Name should not exceed 50 alphabetical characters (excluding spaces)');
+                    }
+                }
+            });
+
+            const emailField = currentPageElement.querySelector('#email');
+            if (emailField && emailField.value && !validateEmail(emailField.value)) {
+                isValid = false;
+                showError(emailField, 'Email must have 5-20 alphanumeric characters before @gmail.com, @yahoo.com, or @outlook.com');
+            }
+
+            const phoneField = currentPageElement.querySelector('#phone');
+            const fatherPhoneField = currentPageElement.querySelector('#fatherphone');
+            if (phoneField && fatherPhoneField && phoneField.value && fatherPhoneField.value) {
+                if (phoneField.value === fatherPhoneField.value) {
+                    isValid = false;
+                    showError(fatherPhoneField, 'Father\'s phone number must be different from the applicant\'s phone number');
+                }
+            }
+
+            const phoneFields = currentPageElement.querySelectorAll('input[type="tel"]');
+            phoneFields.forEach(field => {
+                if (field.value && !validatePhone(field.value)) {
+                    isValid = false;
+                    showError(field, 'Phone number must be exactly 10 digits and start with 6, 7, 8, or 9');
+                }
+            });
+
+            const experienceField = currentPageElement.querySelector('#experience');
+            if (experienceField && experienceField.value && isExperienced) {
+                const value = parseFloat(experienceField.value);
+                if (isNaN(value) || value < 0 || value > 50) {
+                    isValid = false;
+                    showError(experienceField, 'Experience must be between 0 and 50 years');
+                }
+            }
+
+            return isValid;
+        }
+
+        function validateName(name) { return /^[A-Za-z\s]+$/.test(name); }
+        function validateNameLength(name) { return name.replace(/\s/g, '').length >= 5; }
+        function validateNameMaxLength(name) { return name.replace(/\s/g, '').length <= 50; }
+        function validateEmail(email) {
+            const validDomains = ['gmail.com', 'yahoo.com', 'outlook.com'];
+            const re = /^([a-zA-Z0-9]{5,20})@([^\s@]+)$/;
+            const match = email.match(re);
+            return match && validDomains.includes(match[2].toLowerCase());
+        }
+        function validatePhone(phone) { return /^[6-9]\d{9}$/.test(phone); }
+        function validateFileType(file) {
+            return ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'].includes(file.type);
+        }
+        function validateFileSize(file) { return file.size <= 5 * 1024 * 1024; }
+
+        function showError(field, message) {
+            removeError(field);
+            const error = document.createElement('div');
+            error.className = 'error';
+            error.textContent = message;
+            field.closest('.input-group').appendChild(error);
+        }
+
+        function removeError(field) {
+            const parent = field.closest('.input-group');
+            const existingError = parent.querySelector('.error');
+            if (existingError) existingError.remove();
+        }
+
+        function setupValidation() {
+            const nameFields = document.querySelectorAll('#fullname, #fathername, #company, #companylocation');
+            nameFields.forEach(field => {
+                field.addEventListener('input', function(e) {
+                    removeError(field);
+                    if (field.value.length === 1 && field.value === ' ') {
+                        field.value = '';
+                        return;
+                    }
+                    
+                    field.value = field.value.replace(/\s{2,}/g, ' ');
+                    field.value = field.value.replace(/[^A-Za-z\s]/g, '');
+                    
+                    const alphaOnly = field.value.replace(/\s/g, '');
+                    if (alphaOnly.length > 50) {
+                        const words = field.value.split(' ');
+                        let charCount = 0;
+                        let newValue = [];
+                        for (let word of words) {
+                            if (charCount + word.length <= 50) {
+                                newValue.push(word);
+                                charCount += word.length;
+                            } else {
+                                const remaining = 50 - charCount;
+                                if (remaining > 0) {
+                                    newValue.push(word.slice(0, remaining));
+                                    charCount += remaining;
+                                }
+                                break;
+                            }
+                        }
+                        field.value = newValue.join(' ');
+                        showError(field, 'Name should not exceed 50 alphabetical characters (excluding spaces)');
+                    }
+                    
+                    if (field.value && !validateName(field.value)) {
+                        showError(field, 'Name should contain only alphabets and spaces');
+                    } else if (field.value && !validateNameLength(field.value)) {
+                        showError(field, 'Name should be at least 5 characters long (excluding spaces)');
+                    }
+                });
+                
+                field.addEventListener('keydown', function(e) {
+                    if (e.key === ' ' && (field.value === '' || field.value.endsWith(' '))) {
+                        e.preventDefault();
+                    }
+                });
+            });
+
+            const phoneFields = document.querySelectorAll('input[type="tel"]');
+            phoneFields.forEach(field => {
+                field.addEventListener('input', function() {
+                    removeError(field);
+                    field.value = field.value.replace(/\D/g, '').slice(0, 10);
+                    if (field.value && !validatePhone(field.value)) {
+                        showError(field, 'Phone number must be exactly 10 digits and start with 6, 7, 8, or 9');
+                    }
+                    if (field.id === 'fatherphone' && field.value) {
+                        const phoneField = document.getElementById('phone');
+                        if (phoneField.value && field.value === phoneField.value) {
+                            showError(field, 'Father\'s phone number must be different from the applicant\'s phone number');
+                        }
+                    }
+                });
+            });
+
+            const emailField = document.getElementById('email');
+            if (emailField) {
+                emailField.addEventListener('input', function(e) {
+                    removeError(emailField);
+                    const value = emailField.value;
+                    const atIndex = value.indexOf('@');
+                    if (atIndex !== -1) {
+                        const localPart = value.substring(0, atIndex);
+                        const domainPart = value.substring(atIndex);
+                        const cleanLocalPart = localPart.replace(/[^a-zA-Z0-9]/g, '');
+                        let newValue = cleanLocalPart.slice(0, 20) + domainPart;
+                        const comIndex = newValue.toLowerCase().indexOf('.com');
+                        if (comIndex !== -1 && comIndex < newValue.length - 4) {
+                            newValue = newValue.substring(0, comIndex + 4);
+                        }
+                        emailField.value = newValue;
+                    } else {
+                        emailField.value = value.replace(/[^a-zA-Z0-9]/g, '').slice(0, 20);
+                    }
+                    
+                    if (emailField.value && !validateEmail(emailField.value)) {
+                        showError(emailField, 'Email must have 5-20 alphanumeric characters before @gmail.com, @yahoo.com, or @outlook.com');
+                    }
+                });
+            }
+
+            const fileFields = document.querySelectorAll('input[type="file"]');
+            fileFields.forEach(field => {
+                field.addEventListener('change', function() {
+                    removeError(field);
+                    if (field.files && field.files.length > 0) {
+                        const file = field.files[0];
+                        if (!validateFileType(file)) {
+                            showError(field, 'Please upload a PDF, JPG, or PNG file only');
+                            field.value = '';
+                        } else if (!validateFileSize(file)) {
+                            showError(field, `File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds 5MB limit`);
+                            field.value = '';
+                        } else {
+                            // Add view button after file selection
+                            let viewButton = field.closest('.input-group').querySelector('.view-button');
+                            if (!viewButton) {
+                                viewButton = document.createElement('button');
+                                viewButton.className = 'view-button';
+                                viewButton.textContent = 'View';
+                                viewButton.style.marginTop = '0.5rem';
+                                viewButton.style.padding = '0.5rem 1rem';
+                                viewButton.style.background = 'var(--accent-color)';
+                                viewButton.style.color = 'white';
+                                viewButton.style.border = 'none';
+                                viewButton.style.borderRadius = '4px';
+                                viewButton.style.cursor = 'pointer';
+                                viewButton.addEventListener('click', () => viewDocument(field));
+                                field.closest('.input-group').appendChild(viewButton);
+                            }
+                        }
+                    } else if (field.required) {
+                        showError(field, 'This field is required');
+                        // Remove view button if file is cleared
+                        const viewButton = field.closest('.input-group').querySelector('.view-button');
+                        if (viewButton) viewButton.remove();
+                    }
+                });
+            });
+
+            const experienceField = document.getElementById('experience');
+            if (experienceField) {
+                experienceField.addEventListener('input', function() {
+                    removeError(experienceField);
+                    const value = parseFloat(this.value);
+                    if (!isNaN(value)) {
+                        if (value > 50) {
+                            this.value = 50;
+                            showError(experienceField, 'Maximum experience is 50 years');
+                        } else if (value < 0) {
+                            this.value = 0;
+                            showError(experienceField, 'Experience cannot be negative');
+                        }
+                    }
+                });
+            }
+        }
+
+        async function submitForm() {
+            if (!validateCurrentPage()) return;
+
+            alert('Submitting your application... Please wait.');
+
+            const formData = new FormData();
+            formData.append('role', selectedRole);
+            formData.append('location', document.getElementById('location').value);
+            formData.append('fullName', document.getElementById('fullname').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('gender', document.getElementById('gender').value);
+            formData.append('fatherName', document.getElementById('fathername').value);
+            formData.append('fatherPhone', document.getElementById('fatherphone').value);
+            formData.append('employmentStatus', document.getElementById('employment-status').value);
+
+            if (isExperienced) {
+                formData.append('companyName', document.getElementById('company').value);
+                formData.append('companyLocation', document.getElementById('companylocation').value);
+                formData.append('experience', document.getElementById('experience').value);
+                if (document.getElementById('relieving').files[0]) {
+                    formData.append('relieving', document.getElementById('relieving').files[0]);
+                }
+            }
+
+            ['ssc', 'inter', 'graduation', 'postgrad'].forEach(field => {
+                const fileInput = document.getElementById(field);
+                if (fileInput.files[0]) {
+                    formData.append(field, fileInput.files[0]);
+                }
+            });
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/applications`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    showSuccessPopup();
+                } else {
+                    alert(result.error || 'Failed to submit application');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                alert('Error submitting application: ' + error.message);
+            }
+        }
+
+        function viewDocument(fileInput) {
+            if (!fileInput.files || fileInput.files.length === 0) {
+                alert('No file selected to view.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const modal = document.getElementById('document-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+
+            modalTitle.textContent = file.name;
+            modalBody.innerHTML = '';
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    if (file.type === 'application/pdf') {
+                        modalBody.innerHTML = `<iframe src="${e.target.result}" class="document-preview"></iframe>`;
+                    } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(file.type)) {
+                        modalBody.innerHTML = `<img src="${e.target.result}" class="document-image" alt="${file.name}">`;
+                    } else {
+                        modalBody.innerHTML = `<p>Unsupported file type: ${file.type}</p>`;
+                    }
+                    modal.style.display = 'block';
+                } catch (error) {
+                    console.error('Error displaying document:', error);
+                    modalBody.innerHTML = `<p>Error loading document: ${error.message}</p>`;
+                    modal.style.display = 'block';
+                }
+            };
+            reader.onerror = function(error) {
+                console.error('Error reading file:', error);
+                modalBody.innerHTML = `<p>Error reading document: ${error.message}</p>`;
+                modal.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+
+            // Add download button
+            let downloadButton = modalBody.querySelector('.download-button');
+            if (!downloadButton) {
+                downloadButton = document.createElement('button');
+                downloadButton.className = 'download-button';
+                downloadButton.textContent = 'Download';
+                downloadButton.style.marginTop = '1rem';
+                downloadButton.style.padding = '0.5rem 1rem';
+                downloadButton.style.background = 'var(--primary-gradient)';
+                downloadButton.style.color = 'white';
+                downloadButton.style.border = 'none';
+                downloadButton.style.borderRadius = '4px';
+                downloadButton.style.cursor = 'pointer';
+                downloadButton.addEventListener('click', () => {
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(file);
+                    link.download = file.name;
+                    link.click();
+                    URL.revokeObjectURL(link.href);
+                });
+                modalBody.appendChild(downloadButton);
+            }
+        }
+
+        function closeDocumentModal() {
+            document.getElementById('document-modal').style.display = 'none';
+            const modalBody = document.getElementById('modal-body');
+            modalBody.innerHTML = '';
+        }
+
+        function showSuccessPopup() {
+            const popup = document.getElementById('successPopup');
+            popup.classList.add('show');
+        }
+
+        function closeSuccessPopup() {
+            const popup = document.getElementById('successPopup');
+            popup.classList.remove('show');
+            resetForm();
+        }
+
+        function resetForm() {
+            document.querySelectorAll('input, select').forEach(field => {
+                if (field.type === 'file') {
+                    field.value = '';
+                    const viewButton = field.closest('.input-group').querySelector('.view-button');
+                    if (viewButton) viewButton.remove();
+                } else {
+                    field.value = '';
+                }
+                removeError(field);
+            });
+
+            document.querySelectorAll('.card').forEach(card => {
+                card.style.border = '1px solid rgba(0, 0, 0, 0.05)';
+            });
+
+            const employmentHistoryFields = document.getElementById('employment-history-fields');
+            employmentHistoryFields.classList.remove('show');
+            document.querySelectorAll('.employment-field').forEach(field => {
+                field.removeAttribute('required');
+            });
+
+            currentPage = 1;
+            selectedRole = '';
+            isExperienced = false;
+
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById('page1').classList.add('active');
+        }
+
+        window.addEventListener('click', (event) => {
+            const modal = document.getElementById('document-modal');
+            if (event.target === modal) {
+                closeDocumentModal();
+            }
+        });
+    </script>
+</body>
+</html>

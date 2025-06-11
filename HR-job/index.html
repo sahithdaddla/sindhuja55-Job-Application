@@ -1,0 +1,1454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Module - Candidate Details</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --text-primary: #333;
+            --text-secondary: #555;
+            --card-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+            --error-color: #e74c3c;
+            --success-color: #2ecc71;
+            --bg-color: #f5f7fa;
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', 'Segoe UI', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: clamp(1.5rem, 5vw, 1.8rem);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header h1 i {
+            font-size: clamp(1.2rem, 4vw, 1.4rem);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 15px;
+        }
+
+        .page-title {
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title h2 {
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 3px;
+            background: var(--accent-color);
+            bottom: -6px;
+            left: 0;
+        }
+
+        .controls-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+            background: white;
+            padding: 12px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+        }
+
+        .search-bar {
+            flex: 1;
+            display: flex;
+            gap: 8px;
+            position: relative;
+            min-width: 200px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 10px 12px 10px 35px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            transition: var(--transition);
+        }
+
+        .search-bar input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .search-bar i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 1rem;
+        }
+
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn i {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+
+        .card-header {
+            background: #f8f9fa;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .card-header h3 {
+            color: var(--primary-color);
+            font-size: clamp(1.2rem, 3.5vw, 1.4rem);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 15px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 12px;
+        }
+
+        .info-item label {
+            display: block;
+            font-size: clamp(0.85rem, 2.5vw, 0.9rem);
+            color: #666;
+            margin-bottom: 4px;
+            font-weight: 500;
+        }
+
+        .info-item span {
+            display: block;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            color: var(--text-primary);
+            padding: 6px 0;
+            word-break: break-word;
+        }
+
+        .section-title {
+            margin: 20px 0 15px;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--primary-color);
+            font-weight: 600;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .document-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .document-item {
+            flex: 1 0 180px;
+            background: #f8f9fa;
+            padding: 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+            border: 1px solid #eee;
+        }
+
+        .document-item:hover {
+            background: #f0f4f8;
+            transform: translateY(-2px);
+        }
+
+        .document-item a {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        }
+
+        .document-item a i {
+            font-size: 1rem;
+        }
+
+        .document-item a:hover {
+            text-decoration: underline;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #888;
+            padding: 30px 0;
+            font-size: clamp(1rem, 3vw, 1.1rem);
+        }
+
+        .employment-history {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #eee;
+        }
+
+        .employment-history .info-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .employment-history .info-item {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .card-footer {
+            padding: 15px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .status-approved {
+            background-color: rgba(46, 204, 113, 0.15);
+            color: var(--success-color);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .status-rejected {
+            background-color: rgba(231, 76, 60, 0.15);
+            color: var(--error-color);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-approve {
+            background-color: var(--success-color);
+        }
+
+        .btn-reject {
+            background-color: var(--error-color);
+        }
+
+        .btn-approve:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-reject:hover {
+            background-color: #c0392b;
+        }
+
+        .offer-letter-upload {
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            display: none;
+        }
+
+        .offer-letter-upload.visible {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .file-input-container {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .file-input-container input[type="file"] {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        }
+
+        .filter-select {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            background-color: white;
+            transition: var(--transition);
+            min-width: 140px;
+        }
+
+        .filter-select:focus {
+            border-color: var(--accent-color);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+
+        .document-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 8px;
+            gap: 8px;
+        }
+
+        .doc-btn {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: clamp(0.8rem, 2.5vw, 0.85rem);
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .doc-btn-view {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .doc-btn-view:hover {
+            background-color: #2980b9;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 15px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 900px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            position: relative;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: clamp(1.2rem, 3vw, 1.5rem);
+            font-weight: bold;
+            color: #777;
+            cursor: pointer;
+        }
+
+        .modal-header {
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-body {
+            max-height: 80vh;
+            overflow: auto;
+        }
+
+        .document-preview {
+            width: 100%;
+            height: clamp(300px, 60vh, 500px);
+            border: none;
+        }
+
+        .document-image {
+            width: 100%;
+            max-height: clamp(300px, 60vh, 500px);
+            object-fit: contain;
+        }
+
+        .file-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f0f4f8;
+            padding: 8px 12px;
+            border-radius: 6px;
+            margin-top: 12px;
+        }
+
+        .file-info {
+            flex: 1;
+        }
+
+        .file-name {
+            font-weight: 500;
+            margin-bottom: 2px;
+            font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+        }
+
+        .file-size {
+            font-size: clamp(0.75rem, 2vw, 0.8rem);
+            color: #666;
+        }
+
+        .file-remove {
+            color: var(--error-color);
+            background: none;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .confirmation-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .confirmation-content h3 {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px;
+            border-radius: 8px 8px 0 0;
+            margin: -20px -20px 15px -20px;
+        }
+
+        .confirmation-content p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .confirmation-buttons {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .confirmation-buttons .btn {
+            padding: 8px 16px;
+            font-size: 14px;
+        }
+
+        .success-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .success-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: fadeIn 0.5s ease;
+        }
+
+        .success-content h3 {
+            color: var(--success-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .success-content p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .success-close {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .success-close:hover {
+            background-color: var(--secondary-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .animate-fadeIn {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .animate-slideIn {
+            animation: slideInRight 0.5s ease;
+        }
+
+        .animate-pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        .candidate-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .candidate-table th, .candidate-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom:1px solid #eee;
+            word-break: break-word;
+            white-space: normal;
+        }
+
+        .candidate-table th {
+            background-color: #f8f9fa;
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .candidate-table tr:hover {
+            background-color: #f5f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+        }
+
+        .action-buttons .btn {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+
+        .candidate-table th:nth-child(1), .candidate-table td:nth-child(1) {
+            width: 25%;
+        }
+
+        .candidate-table th:nth-child(2), .candidate-table td:nth-child(2) {
+            width: 30%;
+        }
+
+        .candidate-table th:nth-child(3), .candidate-table td:nth-child(3) {
+            width: 20%;
+        }
+
+        .candidate-table th:nth-child(4), .candidate-table td:nth-child(4) {
+            width: 15%;
+        }
+
+        .candidate-table th:nth-child(5), .candidate-table td:nth-child(5) {
+            width: 10%;
+        }
+
+        @media (max-width: 1024px) {
+            .controls-container {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 12px;
+            }
+
+            .search-bar {
+                width: 100%;
+            }
+
+            .btn, .filter-select {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px 10px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .document-list {
+                flex-direction: column;
+            }
+
+            .card-footer {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .modal-content {
+                width: 95%;
+                margin: 10% auto;
+                padding: 10px;
+            }
+
+            .document-preview, .document-image {
+                height: 50vh;
+            }
+
+            .candidate-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .candidate-table thead {
+                display: none;
+            }
+
+            .candidate-table tbody tr {
+                display: block;
+                margin-bottom: 15px;
+                border: 1px solid #eee;
+                border-radius: 8px;
+                padding: 10px;
+                background: #fff;
+                box-shadow: var(--card-shadow);
+            }
+
+            .candidate-table tbody td {
+                display: flex;
+                justify-content: space-between;
+                padding: 8px 10px;
+                border-bottom: none;
+                font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+                word-break: break-word;
+            }
+
+            .candidate-table tbody td:before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--primary-color);
+                flex: 1;
+                text-align: left;
+            }
+
+            .candidate-table tbody td.action-buttons {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .candidate-table tbody td.action-buttons .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: clamp(1.2rem, 4vw, 1.5rem);
+            }
+
+            .page-title h2 {
+                font-size: clamp(1.2rem, 4vw, 1.5rem);
+            }
+
+            .card-header h3 {
+                font-size: clamp(1rem, 3.5vw, 1.2rem);
+            }
+
+            .search-bar input, .filter-select, .btn {
+                font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+            }
+
+            .document-item {
+                flex: 1 0 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header animate-fadeIn">
+        <h1><i class="fas fa-building"></i> HR Job Application</h1>
+    </header>
+
+    <div class="container">
+        <div class="page-title animate-fadeIn">
+            <h2>Candidate Details</h2>
+        </div>
+        
+        <div class="controls-container animate-fadeIn">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search by name, email, or role...">
+            </div>
+            <button id="search-button" class="btn">
+                <i class="fas fa-search"></i> Search
+            </button>
+            <select id="status-filter" class="filter-select">
+                <option value="all">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+            </select>
+            <button id="clear-records" class="btn" style="background-color: #e74c3c;">
+                <i class="fas fa-trash-alt"></i> Clear Records
+            </button>
+        </div>
+        
+        <div id="candidate-list" class="card animate-fadeIn"></div>
+    </div>
+
+    <div id="candidate-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeCandidateModal()">×</span>
+            <div class="modal-header">
+                <h3 id="candidate-modal-title">Candidate Details</h3>
+            </div>
+            <div class="modal-body" id="candidate-modal-body">
+                <!-- Candidate details will be populated here -->
+            </div>
+            <div class="card-footer" id="candidate-modal-footer">
+                <!-- Action buttons will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="document-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDocumentModal()">×</span>
+            <div class="modal-header">
+                <h3 id="document-modal-title">Document Preview</h3>
+            </div>
+            <div class="modal-body" id="document-modal-body">
+                <!-- Document content will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <div id="confirmation-modal" class="confirmation-modal">
+        <div class="confirmation-content">
+            <h3>Confirm Action</h3>
+            <p id="confirmation-message"></p>
+            <div class="confirmation-buttons">
+                <button id="confirm-action" class="btn" style="background-color: var(--success-color); padding: 8px 16px;">Confirm</button>
+                <button id="cancel-action" class="btn" style="background-color: var(--error-color); padding: 8px 16px;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="success-modal" class="success-modal">
+        <div class="success-content">
+            <h3>Success</h3>
+            <p id="success-message">Action completed successfully!</p>
+            <button class="success-close">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000';
+        let currentAction = null;
+        let currentId = null;
+
+        function debounce(func, wait) {
+            let timeout;
+            return function(...args) {
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(this, args), wait);
+            };
+        }
+
+        function escapeHTML(str) {
+            if (typeof str !== 'string') return '';
+            return str.replace(/&/g, '&amp;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#39;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;');
+        }
+
+        async function displayCandidateTable(searchTerm = '', statusFilter = 'all') {
+            const candidateList = document.getElementById('candidate-list');
+            try {
+                const response = await fetch(`${BASE_URL}/api/applications?search=${encodeURIComponent(searchTerm)}&status=${statusFilter}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const candidates = await response.json();
+
+                if (!candidates || candidates.length === 0) {
+                    candidateList.innerHTML = `<div class="no-data"><i class="fas fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i><p>No candidates match your criteria.</p></div>`;
+                    return;
+                }
+
+                let tableHTML = `
+                    <div class="card-header"><h3>Candidate Applications (${candidates.length})</h3></div>
+                    <div class="card-body">
+                        <table class="candidate-table">
+                            <thead>
+                                <tr>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Role Applied</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                candidates.forEach((candidate) => {
+                    const statusBadge = candidate.status === 'approved' ?
+                        `<span class="status-pill status-approved"><i class="fas fa-check-circle"></i> Approved</span>` :
+                        candidate.status === 'rejected' ?
+                        `<span class="status-pill status-rejected"><i class="fas fa-times-circle"></i> Rejected</span>` :
+                        `<span class="status-pill" style="background-color: rgba(243, 156, 18, 0.15); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.3);"><i class="fas fa-clock"></i> Pending</span>`;
+
+                    tableHTML += `
+                        <tr>
+                            <td data-label="Full Name">${escapeHTML(candidate.personal_info.fullName || 'N/A')}</td>
+                            <td data-label="Email">${escapeHTML(candidate.personal_info.email || 'N/A')}</td>
+                            <td data-label="Role Applied">${escapeHTML(candidate.role || 'N/A')}</td>
+                            <td data-label="Status">${statusBadge}</td>
+                            <td data-label="Actions" class="action-buttons">
+                                <button class="btn view-btn" data-id="${candidate.id}" style="background-color: var(--accent-color);"><i class="fas fa-eye"></i> View</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</tbody></table></div>`;
+                candidateList.innerHTML = tableHTML;
+
+                document.querySelectorAll('.view-btn').forEach(btn => btn.addEventListener('click', () => showCandidateDetails(btn.dataset.id)));
+            } catch (error) {
+                console.error('Error fetching candidates:', error);
+                candidateList.innerHTML = `<div class="no-data"><i class="fas fa-exclamation-triangle" style="font-size: 48px; color: #e74c3c; margin-bottom: 20px;"></i><p>Error loading candidate data: ${error.message}</p></div>`;
+            }
+        }
+
+        async function showCandidateDetails(id) {
+            try {
+                const response = await fetch(`${BASE_URL}/api/applications/${id}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const candidate = await response.json();
+                currentId = id;
+
+                const modalBody = document.getElementById('candidate-modal-body');
+                const modalFooter = document.getElementById('candidate-modal-footer');
+                const modalTitle = document.getElementById('candidate-modal-title');
+
+                modalTitle.textContent = `${escapeHTML(candidate.personal_info.fullName || 'N/A')}'s Application`;
+
+                const createDocumentLink = (doc, label, icon, docId) => {
+                    if (!doc) return '';
+                    const escapedPath = escapeHTML(doc.path);
+                    const escapedLabel = escapeHTML(label);
+                    const escapedType = escapeHTML(doc.type);
+                    return `
+                        <div class="document-item" data-doc-id="${docId}">
+                            <a href="${BASE_URL}/${doc.path.replace(/\\/g, '/')}" download="${escapeHTML(doc.name)}"><i class="${icon}"></i> ${escapedLabel}</a>
+                            <div class="document-actions">
+                                <button class="doc-btn doc-btn-view" data-path="${escapedPath}" data-label="${escapedLabel}" data-type="${escapedType}"><i class="fas fa-eye"></i> View</button>
+                            </div>
+                        </div>
+                    `;
+                };
+
+                let documentsHTML = '<div class="document-list">';
+                const docTypes = {
+                    ssc: { label: 'SSC Certificate', icon: 'fas fa-file-pdf' },
+                    inter: { label: 'Intermediate Certificate', icon: 'fas fa-file-pdf' },
+                    graduation: { label: 'Graduation Certificate', icon: 'fas fa-file-pdf' },
+                    postgrad: { label: 'Post Graduation Certificate', icon: 'fas fa-file-pdf' },
+                    relievingLetter: { label: 'Relieving Letter', icon: 'fas fa-file-alt' }
+                };
+
+                let hasDocuments = false;
+                let docIndex = 0;
+                for (const [key, doc] of Object.entries(candidate.documents || {})) {
+                    if (doc && docTypes[key]) {
+                        documentsHTML += createDocumentLink(doc, docTypes[key].label, docTypes[key].icon, `doc-${id}-${docIndex++}`);
+                        hasDocuments = true;
+                    }
+                }
+                documentsHTML += hasDocuments ? '</div>' : '<p>No documents uploaded.</p></div>';
+
+                let offerLetterHTML = '';
+                if (candidate.status === 'approved' && !candidate.offer_letter) {
+                    offerLetterHTML = `
+                        <div class="section-title">Offer Letter</div>
+                        <div class="offer-letter-upload visible" id="offer-letter-upload-${id}">
+                            <label>Upload Offer Letter (PDF, JPG, PNG, Max 5MB):</label>
+                            <div class="file-input-container">
+                                <input type="file" id="offer-letter-${id}" accept=".pdf,.jpg,.jpeg,.png" onchange="handleOfferLetterUpload('${id}')">
+                                <button class="btn upload-offer-btn" data-id="${id}"><i class="fas fa-upload"></i> Upload</button>
+                            </div>
+                            <div id="file-display-${id}" class="file-display" style="display: none;">
+                                <div class="file-info">
+                                    <div class="file-name" id="file-name-${id}"></div>
+                                    <div class="file-size" id="file-size-${id}"></div>
+                                </div>
+                                <button class="file-remove" onclick="removeDisplayedOfferLetter('${id}')"><i class="fas fa-trash"></i></button>
+                            </div>
+                        </div>
+                    `;
+                } else if (candidate.status === 'approved' && candidate.offer_letter) {
+                    offerLetterHTML = `
+                        <div class="section-title">Offer Letter</div>
+                        <div class="document-list">
+                            ${createDocumentLink(candidate.offer_letter, 'Offer Letter', 'fas fa-file-contract', `offer-${id}`)}
+                        </div>
+                    `;
+                }
+
+                let employmentHistoryHTML = '';
+                if (candidate.employment_status === 'experienced' && candidate.employment_history) {
+                    employmentHistoryHTML = `
+                        <div class="section-title">Employment History</div>
+                        <div class="employment-history">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <label>Company Name:</label>
+                                    <span>${escapeHTML(candidate.employment_history.companyName || 'N/A')}</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Location:</label>
+                                    <span>${escapeHTML(candidate.employment_history.location || 'N/A')}</span>
+                                </div>
+                                <div class="info-item">
+                                    <label>Years of Experience:</label>
+                                    <span>${escapeHTML(candidate.employment_history.experience || 'N/A')}</span>
+                                </div>
+                            </div>
+                            <div class="document-list">
+                                ${createDocumentLink(candidate.documents?.relievingLetter, 'Relieving Letter', 'fas fa-file-alt', `relieving-${id}`)}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const statusHTML = candidate.status === 'approved' ?
+                    `<span class="status-pill status-approved"><i class="fas fa-check-circle"></i> Approved</span>` :
+                    candidate.status === 'rejected' ?
+                    `<span class="status-pill status-rejected"><i class="fas fa-times-circle"></i> Rejected</span>` :
+                    `<span class="status-pill" style="background-color: rgba(243, 156, 18, 0.15); color: #f39c12; border: 1px solid rgba(243, 156, 18, 0.3);"><i class="fas fa-clock"></i> Pending</span>`;
+
+                modalBody.innerHTML = `
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Full Name:</label>
+                            <span>${escapeHTML(candidate.personal_info.fullName || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span>${escapeHTML(candidate.personal_info.email || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Phone:</label>
+                            <span>${escapeHTML(candidate.personal_info.phone || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Gender:</label>
+                            <span>${escapeHTML(candidate.personal_info.gender || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Father's Name:</label>
+                            <span>${escapeHTML(candidate.personal_info.fatherName || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Father's Phone:</label>
+                            <span>${escapeHTML(candidate.personal_info.fatherPhone || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Role Applied:</label>
+                            <span>${escapeHTML(candidate.role || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Location Preference:</label>
+                            <span>${escapeHTML(candidate.location || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Employment Status:</label>
+                            <span>${escapeHTML(candidate.employment_status || 'N/A')}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Application Status:</label>
+                            <span>${statusHTML}</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Application Date:</label>
+                            <span>${new Date(candidate.created_at).toLocaleString()}</span>
+                        </div>
+                    </div>
+                    <div class="section-title">Documents</div>
+                    ${documentsHTML}
+                    ${employmentHistoryHTML}
+                    ${offerLetterHTML}
+                `;
+
+                let actionButtonsHTML = '';
+                if (candidate.status === 'pending') {
+                    actionButtonsHTML = `
+                        <button class="btn btn-reject" data-action="reject" data-id="${id}"><i class="fas fa-times"></i> Reject</button>
+                        <button class="btn btn-approve animate-pulse" data-action="approve" data-id="${id}"><i class="fas fa-check"></i> Approve</button>
+                    `;
+                }
+                if (candidate.offer_letter) {
+                    actionButtonsHTML += `
+                        <button class="btn" style="background-color: var(--error-color);" data-action="remove-offer" data-id="${id}"><i class="fas fa-trash"></i> Remove Offer Letter</button>
+                    `;
+                }
+                modalFooter.innerHTML = actionButtonsHTML;
+
+                // Attach event listeners for document view buttons
+                modalBody.querySelectorAll('.doc-btn-view').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const path = btn.dataset.path;
+                        const label = btn.dataset.label;
+                        const type = btn.dataset.type;
+                        console.log('Viewing document:', { path, label, type }); // Debug
+                        viewDocument(path, label, type);
+                    });
+                });
+
+                // Attach event listeners for action buttons
+                modalFooter.querySelectorAll('.btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const action = btn.dataset.action;
+                        const id = btn.dataset.id;
+                        if (action && id) {
+                            showConfirmation(action, id);
+                        }
+                    });
+                });
+
+                // Attach event listener for offer letter upload button
+                const uploadBtn = modalBody.querySelector(`.upload-offer-btn[data-id="${id}"]`);
+                if (uploadBtn) {
+                    uploadBtn.addEventListener('click', () => uploadOfferLetter(id));
+                }
+
+                document.getElementById('candidate-modal').style.display = 'block';
+            } catch (error) {
+                console.error('Error fetching candidate details:', error);
+                showSuccessModal(`Error loading candidate details: ${error.message}`, true);
+            }
+        }
+
+        function viewDocument(filePath, title, fileType) {
+    const modal = document.getElementById('document-modal');
+    const modalTitle = document.getElementById('document-modal-title');
+    const modalBody = document.getElementById('document-modal-body');
+
+    modalTitle.textContent = escapeHTML(title);
+    modalBody.innerHTML = '<p>Loading document...</p>'; // Show loading state
+
+    try {
+        const fullPath = `${BASE_URL}/${filePath.replace(/\\/g, '/')}`;
+        console.log('Document full path:', fullPath); // Debug
+        let contentHTML = '';
+
+        // Display preview based on file type
+        if (fileType === 'application/pdf') {
+            contentHTML = `<iframe src="${fullPath}" class="document-preview"></iframe>`;
+        } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileType)) {
+            contentHTML = `<img src="${fullPath}" class="document-image" alt="${escapeHTML(title)}">`;
+        } else {
+            contentHTML = `<p>Unsupported file type: ${escapeHTML(fileType)}</p>`;
+        }
+
+        modalBody.innerHTML = contentHTML;
+
+        // Create and append download button
+        const downloadButton = document.createElement('button');
+        downloadButton.className = 'btn';
+        downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
+        downloadButton.style.marginTop = '12px';
+        downloadButton.style.display = 'block';
+        downloadButton.style.marginLeft = 'auto';
+        downloadButton.style.marginRight = 'auto';
+        downloadButton.style.textAlign = 'center';
+        downloadButton.onclick = async () => {
+            try {
+                // Fetch the file as a blob to ensure download
+                const response = await fetch(fullPath, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': fileType
+                    }
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to fetch the file');
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = title || 'document'; // Use title as file name
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url); // Clean up
+            } catch (error) {
+                console.error('Error downloading file:', error);
+                showSuccessModal(`Error downloading file: ${error.message}`, true);
+            }
+        };
+        modalBody.appendChild(downloadButton);
+
+        modal.style.display = 'block';
+    } catch (error) {
+        console.error('Error displaying document:', error);
+        modalBody.innerHTML = `<p>Error loading document: ${error.message}</p>`;
+        modal.style.display = 'block';
+    }
+}
+
+        function handleOfferLetterUpload(id) {
+            const fileInput = document.getElementById(`offer-letter-${id}`);
+            const fileDisplay = document.getElementById(`file-display-${id}`);
+            const fileName = document.getElementById(`file-name-${id}`);
+            const fileSize = document.getElementById(`file-size-${id}`);
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                fileDisplay.style.display = 'none';
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
+            const maxSize = 5 * 1024 * 1024; // 5MB
+
+            if (!validTypes.includes(file.type)) {
+                showSuccessModal('Please upload a PDF, JPG, or PNG file.', true);
+                fileInput.value = '';
+                fileDisplay.style.display = 'none';
+                return;
+            }
+
+            if (file.size > maxSize) {
+                showSuccessModal(`File size (${(file.size / (1024 * 1024)).toFixed(2)}MB) exceeds 5MB limit.`, true);
+                fileInput.value = '';
+                fileDisplay.style.display = 'none';
+                return;
+            }
+
+            fileName.textContent = file.name;
+            fileSize.textContent = `${(file.size / (1024 * 1024)).toFixed(2)} MB`;
+            fileDisplay.style.display = 'flex';
+        }
+
+        function removeDisplayedOfferLetter(id) {
+            const fileInput = document.getElementById(`offer-letter-${id}`);
+            const fileDisplay = document.getElementById(`file-display-${id}`);
+            fileInput.value = '';
+            fileDisplay.style.display = 'none';
+        }
+
+        async function uploadOfferLetter(id) {
+            const fileInput = document.getElementById(`offer-letter-${id}`);
+            if (!fileInput.files || fileInput.files.length === 0) {
+                showSuccessModal('Please select a file to upload.', true);
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('offerLetter', file);
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/applications/${id}/offer-letter`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    showSuccessModal('Offer letter uploaded successfully!');
+                    showCandidateDetails(id);
+                } else {
+                    showSuccessModal(result.error || 'Failed to upload offer letter.', true);
+                }
+            } catch (error) {
+                console.error('Error uploading offer letter:', error);
+                showSuccessModal(`Error uploading offer letter: ${error.message}`, true);
+            }
+        }
+
+        function showConfirmation(action, id) {
+            currentAction = action;
+            currentId = id;
+            const messages = {
+                approve: 'Are you sure you want to approve this candidate?',
+                reject: 'Are you sure you want to reject this candidate?',
+                'remove-offer': 'Are you sure you want to remove the offer letter?',
+                'clear-records': 'Are you sure you want to clear all candidate records?'
+            };
+            document.getElementById('confirmation-message').textContent = messages[action] || 'Confirm this action?';
+            document.getElementById('confirmation-modal').style.display = 'flex';
+        }
+
+        async function confirmAction() {
+            if (!currentAction || (currentAction !== 'clear-records' && !currentId)) return;
+
+            try {
+                let response;
+                if (currentAction === 'clear-records') {
+                    response = await fetch(`${BASE_URL}/api/applications`, {
+                        method: 'DELETE'
+                    });
+                } else if (currentAction === 'remove-offer') {
+                    response = await fetch(`${BASE_URL}/api/applications/${currentId}/offer-letter`, {
+                        method: 'DELETE'
+                    });
+                } else {
+                    response = await fetch(`${BASE_URL}/api/applications/${currentId}/status`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ status: currentAction })
+                    });
+                }
+
+                const result = await response.json();
+                if (response.ok) {
+                    showSuccessModal(result.message || 'Action completed successfully!');
+                    document.getElementById('confirmation-modal').style.display = 'none';
+                    if (currentAction === 'clear-records') {
+                        displayCandidateTable();
+                    } else {
+                        showCandidateDetails(currentId);
+                        displayCandidateTable(
+                            document.getElementById('search-input').value,
+                            document.getElementById('status-filter').value
+                        );
+                    }
+                } else {
+                    showSuccessModal(result.error || 'Failed to complete action.', true);
+                }
+            } catch (error) {
+                console.error(`Error performing ${currentAction}:`, error);
+                showSuccessModal(`Error: ${error.message}`, true);
+            }
+
+            currentAction = null;
+            currentId = null;
+        }
+
+        function closeCandidateModal() {
+            document.getElementById('candidate-modal').style.display = 'none';
+            document.getElementById('candidate-modal-body').innerHTML = '';
+            document.getElementById('candidate-modal-footer').innerHTML = '';
+            currentId = null;
+        }
+
+        function closeDocumentModal() {
+            document.getElementById('document-modal').style.display = 'none';
+            document.getElementById('document-modal-body').innerHTML = '';
+        }
+
+        function showSuccessModal(message, isError = false) {
+            const modal = document.getElementById('success-modal');
+            const successContent = document.querySelector('.success-content');
+            document.getElementById('success-message').textContent = message;
+            successContent.querySelector('h3').style.color = isError ? 'var(--error-color)' : 'var(--success-color)';
+            modal.style.display = 'flex';
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            displayCandidateTable();
+
+            const searchInput = document.getElementById('search-input');
+            const searchButton = document.getElementById('search-button');
+            const statusFilter = document.getElementById('status-filter');
+            const clearRecords = document.getElementById('clear-records');
+
+            searchButton.addEventListener('click', () => {
+                displayCandidateTable(searchInput.value, statusFilter.value);
+            });
+
+            searchInput.addEventListener('input', debounce(() => {
+                displayCandidateTable(searchInput.value, statusFilter.value);
+            }, 300));
+
+            statusFilter.addEventListener('change', () => {
+                displayCandidateTable(searchInput.value, statusFilter.value);
+            });
+
+            clearRecords.addEventListener('click', () => {
+                showConfirmation('clear-records');
+            });
+
+            document.querySelectorAll('.close-modal').forEach(closeBtn => {
+                closeBtn.addEventListener('click', () => {
+                    document.getElementById('document-modal').style.display = 'none';
+                    document.getElementById('candidate-modal').style.display = 'none';
+                });
+            });
+
+            document.getElementById('confirm-action').addEventListener('click', confirmAction);
+
+            document.getElementById('cancel-action').addEventListener('click', () => {
+                document.getElementById('confirmation-modal').style.display = 'none';
+                currentAction = null;
+                currentId = null;
+            });
+
+            document.querySelector('.success-close').addEventListener('click', () => {
+                document.getElementById('success-modal').style.display = 'none';
+            });
+
+            window.addEventListener('click', (event) => {
+                if (event.target === document.getElementById('candidate-modal')) {
+                    closeCandidateModal();
+                }
+                if (event.target === document.getElementById('document-modal')) {
+                    closeDocumentModal();
+                }
+                if (event.target === document.getElementById('confirmation-modal')) {
+                    document.getElementById('confirmation-modal').style.display = 'none';
+                    currentAction = null;
+                    currentId = null;
+                }
+                if (event.target === document.getElementById('success-modal')) {
+                    document.getElementById('success-modal').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
