@@ -633,7 +633,7 @@
         .candidate-table th, .candidate-table td {
             padding: 12px;
             text-align: center;
-            border-bottom:1px solid #eee;
+            border-bottom: 1px solid #eee;
             word-break: break-word;
             white-space: normal;
         }
@@ -891,7 +891,7 @@
             };
         }
 
-        function escapeHTML(str) {
+         function escapeHTML(str) {
             if (typeof str !== 'string') return '';
             return str.replace(/&/g, '&amp;')
                       .replace(/"/g, '&quot;')
@@ -980,9 +980,10 @@
                     const escapedPath = escapeHTML(doc.path);
                     const escapedLabel = escapeHTML(label);
                     const escapedType = escapeHTML(doc.type);
+                    const escapedName = escapeHTML(doc.name).replace(/"/g, '"');
                     return `
                         <div class="document-item" data-doc-id="${docId}">
-                            <a href="${BASE_URL}/${doc.path.replace(/\\/g, '/')}" download="${escapeHTML(doc.name)}"><i class="${icon}"></i> ${escapedLabel}</a>
+                            <a href="${BASE_URL}/${doc.path.replace(/\\/g, '/')}" download="${escapedName}"><i class="${icon}"></i> ${escapedLabel}</a>
                             <div class="document-actions">
                                 <button class="doc-btn doc-btn-view" data-path="${escapedPath}" data-label="${escapedLabel}" data-type="${escapedType}"><i class="fas fa-eye"></i> View</button>
                             </div>
@@ -990,13 +991,13 @@
                     `;
                 };
 
-                let documentsHTML = '<div class="document-list">';
+                let documentsHTML = '<div class="section-title">Documents</div><div class="document-list">';
                 const docTypes = {
                     ssc: { label: 'SSC Certificate', icon: 'fas fa-file-pdf' },
                     inter: { label: 'Intermediate Certificate', icon: 'fas fa-file-pdf' },
                     graduation: { label: 'Graduation Certificate', icon: 'fas fa-file-pdf' },
                     postgrad: { label: 'Post Graduation Certificate', icon: 'fas fa-file-pdf' },
-                    relievingLetter: { label: 'Relieving Letter', icon: 'fas fa-file-alt' }
+                    relieving: { label: 'Relieving Letter', icon: 'fas fa-file-alt' }
                 };
 
                 let hasDocuments = false;
@@ -1056,9 +1057,6 @@
                                     <span>${escapeHTML(candidate.employment_history.experience || 'N/A')}</span>
                                 </div>
                             </div>
-                            <div class="document-list">
-                                ${createDocumentLink(candidate.documents?.relievingLetter, 'Relieving Letter', 'fas fa-file-alt', `relieving-${id}`)}
-                            </div>
                         </div>
                     `;
                 }
@@ -1116,7 +1114,6 @@
                             <span>${new Date(candidate.created_at).toLocaleString()}</span>
                         </div>
                     </div>
-                    <div class="section-title">Documents</div>
                     ${documentsHTML}
                     ${employmentHistoryHTML}
                     ${offerLetterHTML}
@@ -1142,17 +1139,18 @@
                         const path = btn.dataset.path;
                         const label = btn.dataset.label;
                         const type = btn.dataset.type;
-                        console.log('Viewing document:', { path, label, type }); // Debug
+                        console.log('Viewing document:', { path, label, type });
                         viewDocument(path, label, type);
                     });
                 });
 
-                // Attach event listeners for action buttons
-                modalFooter.querySelectorAll('.btn').forEach(btn => {
+                // Attach event listeners for action buttons (approve, reject, remove-offer)
+                modalFooter.querySelectorAll('.btn[data-action]').forEach(btn => {
                     btn.addEventListener('click', () => {
                         const action = btn.dataset.action;
                         const id = btn.dataset.id;
                         if (action && id) {
+                            console.log(`Action button clicked: ${action} for ID: ${id}`);
                             showConfirmation(action, id);
                         }
                     });
@@ -1172,73 +1170,70 @@
         }
 
         function viewDocument(filePath, title, fileType) {
-    const modal = document.getElementById('document-modal');
-    const modalTitle = document.getElementById('document-modal-title');
-    const modalBody = document.getElementById('document-modal-body');
+            const modal = document.getElementById('document-modal');
+            const modalTitle = document.getElementById('document-modal-title');
+            const modalBody = document.getElementById('document-modal-body');
 
-    modalTitle.textContent = escapeHTML(title);
-    modalBody.innerHTML = '<p>Loading document...</p>'; // Show loading state
+            modalTitle.textContent = escapeHTML(title);
+            modalBody.innerHTML = '<p>Loading document...</p>';
 
-    try {
-        const fullPath = `${BASE_URL}/${filePath.replace(/\\/g, '/')}`;
-        console.log('Document full path:', fullPath); // Debug
-        let contentHTML = '';
-
-        // Display preview based on file type
-        if (fileType === 'application/pdf') {
-            contentHTML = `<iframe src="${fullPath}" class="document-preview"></iframe>`;
-        } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileType)) {
-            contentHTML = `<img src="${fullPath}" class="document-image" alt="${escapeHTML(title)}">`;
-        } else {
-            contentHTML = `<p>Unsupported file type: ${escapeHTML(fileType)}</p>`;
-        }
-
-        modalBody.innerHTML = contentHTML;
-
-        // Create and append download button
-        const downloadButton = document.createElement('button');
-        downloadButton.className = 'btn';
-        downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
-        downloadButton.style.marginTop = '12px';
-        downloadButton.style.display = 'block';
-        downloadButton.style.marginLeft = 'auto';
-        downloadButton.style.marginRight = 'auto';
-        downloadButton.style.textAlign = 'center';
-        downloadButton.onclick = async () => {
             try {
-                // Fetch the file as a blob to ensure download
-                const response = await fetch(fullPath, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': fileType
-                    }
-                });
-                if (!response.ok) {
-                    throw new Error('Failed to fetch the file');
-                }
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = title || 'document'; // Use title as file name
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url); // Clean up
-            } catch (error) {
-                console.error('Error downloading file:', error);
-                showSuccessModal(`Error downloading file: ${error.message}`, true);
-            }
-        };
-        modalBody.appendChild(downloadButton);
+                const fullPath = `${BASE_URL}/${filePath.replace(/\\/g, '/')}`;
+                console.log('Document full path:', fullPath);
+                let contentHTML = '';
 
-        modal.style.display = 'block';
-    } catch (error) {
-        console.error('Error displaying document:', error);
-        modalBody.innerHTML = `<p>Error loading document: ${error.message}</p>`;
-        modal.style.display = 'block';
-    }
-}
+                if (fileType === 'application/pdf') {
+                    contentHTML = `<iframe src="${fullPath}" class="document-preview"></iframe>`;
+                } else if (['image/jpeg', 'image/png', 'image/jpg'].includes(fileType)) {
+                    contentHTML = `<img src="${fullPath}" class="document-image" alt="${escapeHTML(title)}">`;
+                } else {
+                    contentHTML = `<p>Unsupported file type: ${escapeHTML(fileType)}</p>`;
+                }
+
+                modalBody.innerHTML = contentHTML;
+
+                const downloadButton = document.createElement('button');
+                downloadButton.className = 'btn';
+                downloadButton.innerHTML = '<i class="fas fa-download"></i> Download';
+                downloadButton.style.marginTop = '12px';
+                downloadButton.style.display = 'block';
+                downloadButton.style.marginLeft = 'auto';
+                downloadButton.style.marginRight = 'auto';
+                downloadButton.style.textAlign = 'center';
+                downloadButton.onclick = async () => {
+                    try {
+                        const response = await fetch(fullPath, {
+                            method: 'GET',
+                            headers: {
+                                'Content-Type': fileType
+                            }
+                        });
+                        if (!response.ok) {
+                            throw new Error('Failed to fetch the file');
+                        }
+                        const blob = await response.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = title || 'document';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        window.URL.revokeObjectURL(url);
+                    } catch (error) {
+                        console.error('Error downloading file:', error);
+                        showSuccessModal(`Error downloading file: ${error.message}`, true);
+                    }
+                };
+                modalBody.appendChild(downloadButton);
+
+                modal.style.display = 'block';
+            } catch (error) {
+                console.error('Error displaying document:', error);
+                modalBody.innerHTML = `<p>Error loading document: ${error.message}</p>`;
+                modal.style.display = 'block';
+            }
+        }
 
         function handleOfferLetterUpload(id) {
             const fileInput = document.getElementById(`offer-letter-${id}`);
@@ -1253,7 +1248,7 @@
 
             const file = fileInput.files[0];
             const validTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/jpg'];
-            const maxSize = 5 * 1024 * 1024; // 5MB
+            const maxSize = 5 * 1024 * 1024;
 
             if (!validTypes.includes(file.type)) {
                 showSuccessModal('Please upload a PDF, JPG, or PNG file.', true);
@@ -1324,7 +1319,11 @@
         }
 
         async function confirmAction() {
-            if (!currentAction || (currentAction !== 'clear-records' && !currentId)) return;
+            if (!currentAction || (currentAction !== 'clear-records' && !currentId)) {
+                console.error('Invalid action or ID:', { currentAction, currentId });
+                showSuccessModal('Invalid action or candidate ID.', true);
+                return;
+            }
 
             try {
                 let response;
@@ -1337,16 +1336,19 @@
                         method: 'DELETE'
                     });
                 } else {
+                    // Standardize status values to match backend expectations
+                    const status = currentAction === 'approve' ? 'approved' : 'rejected';
+                    console.log(`Sending status update: ${status} for ID: ${currentId}`);
                     response = await fetch(`${BASE_URL}/api/applications/${currentId}/status`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ status: currentAction })
+                        body: JSON.stringify({ status: status })
                     });
                 }
 
                 const result = await response.json();
                 if (response.ok) {
-                    showSuccessModal(result.message || 'Action completed successfully!');
+                    showSuccessModal(result.message || `${currentAction.charAt(0).toUpperCase() + currentAction.slice(1)} action completed successfully!`);
                     document.getElementById('confirmation-modal').style.display = 'none';
                     if (currentAction === 'clear-records') {
                         displayCandidateTable();
@@ -1358,15 +1360,16 @@
                         );
                     }
                 } else {
-                    showSuccessModal(result.error || 'Failed to complete action.', true);
+                    console.error('API error response:', result);
+                    showSuccessModal(result.error || `Failed to perform ${currentAction} action.`, true);
                 }
             } catch (error) {
                 console.error(`Error performing ${currentAction}:`, error);
                 showSuccessModal(`Error: ${error.message}`, true);
+            } finally {
+                currentAction = null;
+                currentId = null;
             }
-
-            currentAction = null;
-            currentId = null;
         }
 
         function closeCandidateModal() {
