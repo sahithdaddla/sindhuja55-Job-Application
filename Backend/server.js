@@ -6,7 +6,7 @@ const cors = require('cors');
 const fs = require('fs');
 
 const app = express();
-const port = 3000;
+const port = 3044;
 
 // Middleware
 app.use(cors());
@@ -16,9 +16,9 @@ app.use('/uploads', express.static('uploads'));
 // PostgreSQL connection
 const pool = new Pool({
     user: 'postgres',
-    host: 'localhost',
+    host: 'postgres',
     database: 'job_application_db',
-    password: 'root',
+    password: 'admin123',
     port: 5432,
 });
 
@@ -301,5 +301,5 @@ app.delete('/api/applications', async (req, res) => {
 
 // Start server
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`Server running at http://13.61.11.89:${port}`);
 });
